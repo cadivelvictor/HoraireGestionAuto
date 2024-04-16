@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34723.18
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoGTFS", "DemoGTFS\DemoGTFS.csproj", "{C99A6E74-4B9E-4B27-809F-421CBE88F39F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoShapes", "ProtoShapes\ProtoShapes.csproj", "{A7535F4B-9D62-4E21-A1A7-7E61E98BD394}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoThermometre", "DemoThermometre\DemoThermometre.csproj", "{A812D84A-4073-416A-A793-0BE7D1495524}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjetTest", "ProjetTest\ProjetTest.csproj", "{AEFA29A4-C1AC-46BE-B7E6-23A596CF1B6C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtoThermometreLigne1", "ProtoThermometreLigne1\ProtoThermometreLigne1.csproj", "{45B831B3-9D30-43E7-BDCE-9ADC023D9745}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoThermometreLigne5", "ProtoThermometreLigne5\ProtoThermometreLigne5.csproj", "{5993CA2A-9E3F-4CB2-B306-5C395DF4A1D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoThermometre", "ProtoThermometre\ProtoThermometre.csproj", "{50CB8D5F-638E-4FCF-9F16-7F8E0263B31C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C99A6E74-4B9E-4B27-809F-421CBE88F39F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C99A6E74-4B9E-4B27-809F-421CBE88F39F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C99A6E74-4B9E-4B27-809F-421CBE88F39F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C99A6E74-4B9E-4B27-809F-421CBE88F39F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7535F4B-9D62-4E21-A1A7-7E61E98BD394}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7535F4B-9D62-4E21-A1A7-7E61E98BD394}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7535F4B-9D62-4E21-A1A7-7E61E98BD394}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7535F4B-9D62-4E21-A1A7-7E61E98BD394}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A812D84A-4073-416A-A793-0BE7D1495524}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A812D84A-4073-416A-A793-0BE7D1495524}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A812D84A-4073-416A-A793-0BE7D1495524}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A812D84A-4073-416A-A793-0BE7D1495524}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEFA29A4-C1AC-46BE-B7E6-23A596CF1B6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEFA29A4-C1AC-46BE-B7E6-23A596CF1B6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEFA29A4-C1AC-46BE-B7E6-23A596CF1B6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEFA29A4-C1AC-46BE-B7E6-23A596CF1B6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45B831B3-9D30-43E7-BDCE-9ADC023D9745}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45B831B3-9D30-43E7-BDCE-9ADC023D9745}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45B831B3-9D30-43E7-BDCE-9ADC023D9745}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45B831B3-9D30-43E7-BDCE-9ADC023D9745}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5993CA2A-9E3F-4CB2-B306-5C395DF4A1D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5993CA2A-9E3F-4CB2-B306-5C395DF4A1D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5993CA2A-9E3F-4CB2-B306-5C395DF4A1D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5993CA2A-9E3F-4CB2-B306-5C395DF4A1D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50CB8D5F-638E-4FCF-9F16-7F8E0263B31C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50CB8D5F-638E-4FCF-9F16-7F8E0263B31C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50CB8D5F-638E-4FCF-9F16-7F8E0263B31C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50CB8D5F-638E-4FCF-9F16-7F8E0263B31C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {46C3EDC7-B58C-4936-BDFB-9F4195BE06BA}
+	EndGlobalSection
+EndGlobal
