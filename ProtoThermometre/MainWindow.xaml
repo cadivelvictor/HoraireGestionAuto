@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProtoThermometre"
         mc:Ignorable="d"
-        Title="MainWindow" Height="484" Width="761" SizeChanged="FenetrePrincipale_SizeChanged" Loaded="FenetrePrincipale_Loaded">
+        Title="MainWindow" Height="873" Width="1125" SizeChanged="FenetrePrincipale_SizeChanged" Loaded="FenetrePrincipale_Loaded" Background="#FFDEDEDE">
     <Grid>
-        <Canvas Name="canvas" Margin="50" >
+        <Canvas Name="canvas" Margin="50" Background="White" >
 
         </Canvas>
     </Grid>
