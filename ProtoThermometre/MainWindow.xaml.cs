@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Path = System.IO.Path;
 
 namespace ProtoThermometre
 {
@@ -22,6 +23,8 @@ namespace ProtoThermometre
         public MainWindow()
         {
             InitializeComponent();
+
+            List<Ligne> lesLignes = new List<Ligne>();
 
             Dictionary<string,string> lignes = new Dictionary<string,string>
             {
@@ -60,9 +63,7 @@ namespace ProtoThermometre
                 new Arret("École Centrale", true, false, new List<string> { "6", "7", "8", "13", "14" }),
                 new Arret("Rieul", true, false, new List<string> { "6", "7", "8", "13", "14" }),
                 new Arret("HÔTEL DE VILLE DE SAINT-DENIS", true, false, new List<string> { "6", "7", "8", "10", "11", "12", "13", "14", "16", "19", "21", "22", "22A", "23" })
-            };
-
-            List<Ligne> lesLignes = new List<Ligne>();
+            };            
 
             foreach (var paireCleValeur in lignes)
             {
@@ -77,21 +78,18 @@ namespace ProtoThermometre
         /// Permet d'exporter le thermomètre en type image .png au format A4
         /// </summary>
         /// <param name="cheminFichier"></param>
-        private void ExporterImage(string cheminFichier)
+        private void ExporterImage(string cheminFichier, int longueur, int hauteur, double dpiX, double dpiY)
         {
-            var largeur = 3508;
-            var hauteur = 2480;
-            var dpiX = 300;
-            var dpiY = 300;
-            RenderTargetBitmap renduFinal = new RenderTargetBitmap(largeur, hauteur, dpiX, dpiY, PixelFormats.Pbgra32);
+            RenderTargetBitmap renduFinal = new RenderTargetBitmap(longueur, hauteur, dpiX, dpiY, PixelFormats.Pbgra32);
 
-            DrawingVisual conceptionVisuelle = new DrawingVisual();
-            using (DrawingContext drawingContext = conceptionVisuelle.RenderOpen())
+            DrawingVisual drawingVisual = new DrawingVisual();
+
+            using (DrawingContext drawingContext = drawingVisual.RenderOpen())
             {
-                drawingContext.DrawRectangle(Brushes.White, null, new Rect(0, 0, largeur, hauteur));
+                drawingContext.DrawRectangle(Brushes.White, null, new Rect(0, 0, longueur, hauteur));
             }
 
-            renduFinal.Render(conceptionVisuelle);
+            renduFinal.Render(drawingVisual);
             renduFinal.Render(canvas);
 
             PngBitmapEncoder encoder = new PngBitmapEncoder();
@@ -103,18 +101,23 @@ namespace ProtoThermometre
             }
         }
 
-        private void Button_exportImage_Click(object sender, RoutedEventArgs e)
+        private void FenetrePrincipale_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "Fichiers d'image (*.png)|*.png";
-            saveFileDialog.FileName = $"GrapheItineraireLigne5_{DateTime.Now:yyyyMMdd_HHmmss}.png";
+            double marge = 50;
+            double largeurCanvas = FenetrePrincipale.ActualWidth - 2 * marge;
+            double hauteurCanvas = FenetrePrincipale.ActualHeight - 2 * marge;
 
-            // Afficher la boîte de dialogue
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                ExporterImage(saveFileDialog.FileName);
-                Process.Start(new ProcessStartInfo(saveFileDialog.FileName) { UseShellExecute = true });
-            }
+            // Mettre à jour les dimensions du canvas
+            canvas.Width = largeurCanvas;
+            canvas.Height = hauteurCanvas;
+        }
+
+        private void FenetrePrincipale_Loaded(object sender, RoutedEventArgs e)
+        {
+            string nomFichierExport = $"GrapheItineraireLigne5_{DateTime.Now:yyyyMMdd_HHmmss}.png";
+            string cheminFichierExport = Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "ExportImage", nomFichierExport);
+            ExporterImage(cheminFichierExport, 3508, 2480, 300, 300);
+            Process.Start(new ProcessStartInfo(cheminFichierExport) { UseShellExecute = true });
         }
     }
 }
