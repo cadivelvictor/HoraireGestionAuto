@@ -38,7 +38,7 @@ namespace ProtoThermometreLigne5
         public string couleurPoleEchange = "#ACC32B";
         public List<Arret> lesArrets = new List<Arret>
         {
-            new Arret("STADE DE L’EST", true, true, new List<string>{"15", "26", "27", "27A", "31", "33"}),
+            new Arret("STADE DE L’EST", true, false, new List<string>{"15", "26", "27", "27A", "31", "33"}),
             new Arret("Parc des Expositions", true, false, new List<string> { "27", "27A", "33" }),
             new Arret("ZEC du Chaudron", true, false, new List <string> { "27", "27A", "33" }),
             new Arret("Manès", true, false, null),
@@ -111,7 +111,7 @@ namespace ProtoThermometreLigne5
                 Height = 15,
                 Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(couleurLigne)),
                 Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(couleurLigne)),
-                StrokeThickness = 1,
+                StrokeThickness = 2,
                 Tag = nomArret,
             };
 

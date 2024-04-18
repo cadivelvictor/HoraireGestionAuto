@@ -1,54 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
+using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Controls;
-using System.Windows.Media.Media3D;
-using System.Windows.Media;
+using Label = System.Windows.Controls.Label;
+using System.Windows;
 
 namespace ProtoThermometre
 {
     public class Thermometre
     {
-        /// <summary>
-        /// Définit la représentation de la couleur de la ligne en système hexadecimal
-        /// </summary>
-        public static string? CouleurLigne;
-        /// <summary>
-        /// Définit la représentation de la couleur des pôles d'échange en système hexadecimal
-        /// </summary>
-        private static string? CouleurPoleEchange;
-        /// <summary>
-        /// Définit une liste d'objets de type Arret pour tous les arrêts de la ligne
-        /// </summary>
-        private static List<Arret>? LesArrets;
-        /// <summary>
-        /// Associe toutes les lignes du réseau à sa couleur hexadécimale
-        /// </summary>
-        private static List<Ligne>? LesLignes;
+        private string CouleurLigne;
+        private string CouleurPoleEchange;
+        private List<Arret> LesArrets;
+        private List<Ligne> LesLignes;
+        private double LongueurPointArret = 15;
+        private double HauteurPointArret = 15;
+        private double EpaisseurTraitArret = 2;
+        private double tpEtiquetteNomArret = 15;
+        private double tpEtiquetteCorrespondance = 12;
+        private double tpEtiquetteNoLigne = 12;
+        private RotateTransform rotationEtiquetteNomArretTerminus = new RotateTransform(0);
 
-        /// <summary>
-        /// Constructeur de la classe Thermometre
-        /// </summary>
-        /// <param name="couleurLigne">Couleur de ligne</param>
-        /// <param name="couleurPoleEchange">Couleur du pole d'échange</param>
-        /// <param name="lesArrets">Liste des arrêts</param>
-        /// <param name="lesLignes">Liste des lignes</param>
+
         public Thermometre(string couleurLigne, string couleurPoleEchange, List<Arret> lesArrets, List<Ligne> lesLignes)
-        { 
-            CouleurLigne = couleurLigne;
-            CouleurPoleEchange = couleurPoleEchange;
-            LesArrets = lesArrets;
-            LesLignes = lesLignes;
+        {
+            this.CouleurLigne = couleurLigne;
+            this.CouleurPoleEchange = couleurPoleEchange;
+            this.LesArrets = lesArrets;
+            this.LesLignes = lesLignes;
         }
-
-        /// <summary>
-        /// Retourne la couleur de la ligne du thermomètre
-        /// </summary>
-        /// <value>CouleurLigne</value>
         public string GetCouleurLigne
         {
             get
@@ -57,10 +42,6 @@ namespace ProtoThermometre
             }
         }
 
-        /// <summary>
-        /// Retourne la couleur de correspondance d'un pole d'échange
-        /// </summary>
-        /// <value>CouleurPoleEchange</value>
         public string GetCouleurPoleEchange
         {
             get
@@ -69,10 +50,6 @@ namespace ProtoThermometre
             }
         }
 
-        /// <summary>
-        /// Retourne une liste d'objets de type Arret
-        /// </summary>
-        /// <value>LesArrets</value>
         public List<Arret> GetLesArrets
         {
             get
@@ -81,10 +58,6 @@ namespace ProtoThermometre
             }
         }
 
-        /// <summary>
-        /// Retourne une liste d'objets de type Ligne
-        /// </summary>
-        /// <value>LesLignes</value>
         public List<Ligne> GetLesLignes
         {
             get
@@ -93,250 +66,264 @@ namespace ProtoThermometre
             }
         }
 
-        /// <summary>
-        /// Permet la création du thermomètre
-        /// </summary>
-        public void Construire()
+        public void Construire(Canvas canvas)
         {
-            var abscisse = 0;
-            var ordonnee = 250;
-            
-            foreach (var arret in LesArrets)
-            {
-                AjouterArret(arret.GetNom, arret.GetPositionX, arret.GetPositionY, arret.GetEstCorrespondance, arret.GetEstPoleEchange, arret.GetLesCorrespondances);
-                abscisse = abscisse + 35;
-            }
+            ;
+            double abscisseArc = canvas.ActualWidth / 2;
+            double ordonneeArc = canvas.ActualHeight / 2;
 
-            // Ajout des arcs entre les arrêts
-            for (int i=0; i<LesArrets.Count-1; i++)
-            {
-                AjouterArc(LesArrets[i].GetNom, LesArrets[i+1].GetNom);
-            }
+            Line arcPrincipal = CreerArc(0, 0, 500, 0, CouleurLigne, 2);
+            canvas.Children.Add(arcPrincipal);
 
-        }
+            double xPAPremier = arcPrincipal.X1 - LongueurPointArret / 2;
+            double yPAPremier = arcPrincipal.Y1 - HauteurPointArret / 2;
 
-        /// <summary>
-        /// Permet de trouver le premier et le dernier arrêt du thermomètre
-        /// </summary>
-        /// <returns>Dictionary<string,bool></returns>
-        private static Dictionary<string, bool> PremierDernierArret()
-        {
-            Dictionary<string, bool> premierDernierArret = new Dictionary<string, bool>();
-
-            bool estPremierArret = false;
-            bool estDernierArret = false;
+            double xPADernier = arcPrincipal.X2 - LongueurPointArret / 2;
+            double yPADernier = arcPrincipal.Y2 - HauteurPointArret / 2;
 
             if (LesArrets.Count > 0)
             {
-                estPremierArret = true;
-                estDernierArret = true;
+                Arret premierArret = LesArrets.First();
+                Arret dernierArret = LesArrets.Last();
 
-                foreach (var arret in LesArrets)
+                if(premierArret != null)
                 {
-                    string nomArret = (string)arret.GetNom;
+                    if (premierArret.GetEstCorrespondance)
+                    {
+                        Ellipse pointArret = CreerPointArret(LongueurPointArret, HauteurPointArret, CouleurPoleEchange, EpaisseurTraitArret, premierArret.GetNom);
+                        Label etiquetteNomArret = CreerEtiquetteNomArret(premierArret.GetNom, tpEtiquetteNomArret, premierArret.GetEstPoleEchange);
+                        Label etiquetteCorrespondanceArret = CreerEtiquetteCorrespondance(tpEtiquetteCorrespondance, premierArret.GetEstPoleEchange);
 
-                    if (arret == LesArrets.First())
-                    {
-                        premierDernierArret.Add(nomArret, true);
+                        etiquetteNomArret.RenderTransform = rotationEtiquetteNomArretTerminus;
+
+                        Canvas.SetLeft(pointArret, xPAPremier);
+                        Canvas.SetTop(pointArret, yPAPremier);
+
+                        Canvas.SetLeft(etiquetteNomArret, xPAPremier + 5);
+                        Canvas.SetTop(etiquetteNomArret, yPAPremier - 230);
+
+                        Canvas.SetLeft(etiquetteCorrespondanceArret, xPAPremier - 2);
+                        Canvas.SetTop(etiquetteCorrespondanceArret, yPAPremier - 6);
+
+                        canvas.Children.Add(pointArret);
+                        canvas.Children.Add(etiquetteNomArret);
+                        canvas.Children.Add(etiquetteCorrespondanceArret);
+
                     }
-                    else
+                    else if (premierArret.GetEstPoleEchange)
                     {
-                        premierDernierArret.Add(nomArret, false);
+                        Ellipse pointPoleEchange = CreerPointArret(LongueurPointArret, HauteurPointArret, CouleurPoleEchange, EpaisseurTraitArret, premierArret.GetNom);
+                        Label etiquetteNomPoleEchange = CreerEtiquetteNomArret(premierArret.GetNom, tpEtiquetteNomArret, premierArret.GetEstPoleEchange);
+                        Label etiquetteCorrespondancePoleEchange = CreerEtiquetteCorrespondance(tpEtiquetteCorrespondance, premierArret.GetEstPoleEchange);
+
+                        etiquetteNomPoleEchange.RenderTransform = rotationEtiquetteNomArretTerminus;
+
+                        Canvas.SetLeft(pointPoleEchange, xPAPremier);
+                        Canvas.SetTop(pointPoleEchange, yPAPremier);
+
+                        Canvas.SetLeft(etiquetteNomPoleEchange, xPAPremier + 5);
+                        Canvas.SetTop(etiquetteNomPoleEchange, yPAPremier - 230);
+
+                        Canvas.SetLeft(etiquetteCorrespondancePoleEchange, xPAPremier - 2);
+                        Canvas.SetTop(etiquetteCorrespondancePoleEchange, yPAPremier - 6);
+
+                        canvas.Children.Add(pointPoleEchange);
+                        canvas.Children.Add(etiquetteNomPoleEchange);
+                        canvas.Children.Add(etiquetteCorrespondancePoleEchange);
+                    }
+                    else if (!premierArret.GetEstCorrespondance && !premierArret.GetEstPoleEchange)
+                    {
+                        Ellipse pointArret = CreerPointArret(LongueurPointArret, HauteurPointArret, CouleurLigne, EpaisseurTraitArret, premierArret.GetNom);
+                        Label etiquetteNomArret = CreerEtiquetteNomArret(premierArret.GetNom, tpEtiquetteNomArret, premierArret.GetEstPoleEchange);
+
+                        etiquetteNomArret.RenderTransform = rotationEtiquetteNomArretTerminus;
+
+                        Canvas.SetLeft(pointArret, xPAPremier);
+                        Canvas.SetTop(pointArret, yPAPremier);
+
+                        Canvas.SetLeft(etiquetteNomArret, xPAPremier + 5);
+                        Canvas.SetTop(etiquetteNomArret, yPAPremier - 230);
+
+                        canvas.Children.Add(pointArret);
+                        canvas.Children.Add(etiquetteNomArret);
                     }
 
-                    if (arret == LesArrets.Last())
-                    {
-                        premierDernierArret[nomArret] = true;
-                    }
+                    LesArrets.RemoveAt(0);
                 }
-            }
 
-            return premierDernierArret;
-        }
-
-        /// <summary>
-        /// Permet d'ajouter un arrêt sur le graphe du thermomètre par ses coordonnées
-        /// </summary>
-        /// <param name="nomArret">Nom de l'arrêt</param>
-        /// <param name="x">Abascisse de l'arrêt</param>
-        /// <param name="y">Ordonnée de l'arrêt</param>
-        private static void AjouterArret(string nomArret, double x, double y, bool estCorrespondance, bool estPoleEchange, List<string> lesCorrespondances)
-        {
-            //Création d'un point d'arrêt avec Ellipse
-            Ellipse pointArret = new Ellipse
-            {
-                Width = 15,
-                Height = 15,
-                Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(CouleurLigne)),
-                Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(CouleurLigne)),
-                StrokeThickness = 1,
-                Tag = nomArret,
-            };
-
-            bool estPremierArret = false;
-            bool estDernierArret = false;
-
-            string nomArretEllipse = (string)pointArret.Tag;
-
-            if (LesArrets.Count > 0)
-            {
-                estPremierArret = LesArrets[0].GetNom == nomArretEllipse;
-                estDernierArret = LesArrets[LesArrets.Count - 1].GetNom == nomArretEllipse;
-            }
-
-            if (estPremierArret || estDernierArret)
-            {
-                pointArret.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(CouleurPoleEchange));
-                pointArret.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(CouleurPoleEchange));
-            }
-
-            //Positionnement d'un point d'arrêt en abscisse et ordonnée
-            Canvas.SetLeft(pointArret, x);
-            Canvas.SetTop(pointArret, y);
-
-            //Création d'une étiquette de correspondance avec Label
-            Label etiquetteCorrespondance = new Label
-            {
-                Content = "C",
-                FontSize = 12,
-                FontWeight = FontWeights.Bold
-            };
-
-            // Positionnement de l'étiquette de correspondance
-            Canvas.SetLeft(etiquetteCorrespondance, x - 2);
-            Canvas.SetTop(etiquetteCorrespondance, y - 6);
-
-            //Création d'une étiquette pour le nom des arrêts avec un Label
-            Label etiquetteNomArret = new Label
-            {
-                Content = nomArret,
-                FontSize = 15,
-                HorizontalContentAlignment = HorizontalAlignment.Center,
-                VerticalContentAlignment = VerticalAlignment.Center
-            };
-
-            double positionX = Canvas.GetLeft(pointArret) - 5;
-            double positionY = Canvas.GetTop(pointArret) + 30;
-
-            if (estCorrespondance)
-            {
-                etiquetteCorrespondance.Foreground = Brushes.White;
-
-                foreach(var correspondance in lesCorrespondances)
+                if(dernierArret != null)
                 {
-                    foreach(var ligne in LesLignes)
+                    if(dernierArret.GetEstCorrespondance)
                     {
-                        Rectangle modelisationLigne = new Rectangle
-                        {
-                            Width = 30,
-                            Height = 20,
-                            Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(ligne.GetCouleur)),
-                            Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(ligne.GetCouleur)),
-                            RadiusX = 2,
-                            RadiusY = 2,
-                            Tag = ligne.GetNumero,
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Center
-                        };
+                        Ellipse pointArret = CreerPointArret(LongueurPointArret, HauteurPointArret, CouleurPoleEchange, EpaisseurTraitArret, dernierArret.GetNom);
+                        Label etiquetteNomArret = CreerEtiquetteNomArret(dernierArret.GetNom, tpEtiquetteNomArret, dernierArret.GetEstPoleEchange);
+                        Label etiquetteCorrespondanceArret = CreerEtiquetteCorrespondance(tpEtiquetteCorrespondance, dernierArret.GetEstPoleEchange);
 
-                        Label numeroLigne = new Label
-                        {
-                            Width = 35,
-                            Height = 25,
-                            Content = ligne.GetNumero,
-                            FontSize = 12,
-                            FontWeight = FontWeights.Bold,
-                            Foreground = Brushes.White,
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Center,
-                            Tag = ligne.GetNumero
-                        };
+                        etiquetteNomArret.RenderTransform = rotationEtiquetteNomArretTerminus;
 
-                        // Récupération des nuémros de lignes dessinés par un rectangle
-                        var tag = modelisationLigne.Tag.ToString();
+                        Canvas.SetLeft(pointArret, xPADernier);
+                        Canvas.SetTop(pointArret, yPADernier);
 
-                        for(int i=0; i < LesArrets.Count; i++)
-                        {
-                            if(LesArrets[i].GetLesCorrespondances.Contains(tag))
-                            {
-                                if (tag.Length < 2)                                      //Si 1 caractère
-                                {
-                                    modelisationLigne.Height = 20;
-                                    modelisationLigne.Width = 20;
+                        Canvas.SetLeft(etiquetteNomArret, xPADernier + 5);
+                        Canvas.SetTop(etiquetteNomArret, yPADernier - 230);
 
-                                    Canvas.SetLeft(numeroLigne, positionX + 3.5);
-                                    Canvas.SetTop(numeroLigne, positionY - 0.5);
-                                    //canvas.Children.Add(modelisationLigne);
+                        Canvas.SetLeft(etiquetteCorrespondanceArret, xPADernier - 2);
+                        Canvas.SetTop(etiquetteCorrespondanceArret, yPADernier - 6);
 
-                                    Canvas.SetLeft(modelisationLigne, positionX + 2);
-                                    Canvas.SetTop(modelisationLigne, positionY + 3);
-                                    //canvas.Children.Add(numeroLigne);
+                        canvas.Children.Add(pointArret);
+                        canvas.Children.Add(etiquetteNomArret);
+                        canvas.Children.Add(etiquetteCorrespondanceArret);
 
-                                    positionY = positionY + 25;
-                                }
-                                else if (tag.Length < 3)                                 //Si 2 caractères
-                                {
-                                    modelisationLigne.Height = 20;
-                                    modelisationLigne.Width = 20;
-
-                                    Canvas.SetLeft(numeroLigne, positionX - 0.1);
-                                    Canvas.SetTop(numeroLigne, positionY - 0.5);
-                                    //canvas.Children.Add(modelisationLigne);
-
-                                    Canvas.SetLeft(modelisationLigne, positionX + 2);
-                                    Canvas.SetTop(modelisationLigne, positionY + 3);
-                                    //canvas.Children.Add(numeroLigne);
-
-                                    positionY = positionY + 25;
-                                }
-                                else if (tag.Length < 5)                                //Si 3 caractères
-                                {
-                                    modelisationLigne.Height = 20;
-                                    modelisationLigne.Width = 30;
-
-                                    Canvas.SetLeft(numeroLigne, positionX);
-                                    Canvas.SetTop(numeroLigne, positionY - 0.5);
-                                    //canvas.Children.Add(modelisationLigne);
-
-                                    Canvas.SetLeft(modelisationLigne, positionX + 2);
-                                    Canvas.SetTop(modelisationLigne, positionY + 3);
-                                    //canvas.Children.Add(numeroLigne);
-
-                                    positionY = positionY + 25;
-                                }
-                            }
-                        }
                     }
-                }
-            }
+                    else if(dernierArret.GetEstPoleEchange)
+                    {
+                        Ellipse pointPoleEchange = CreerPointArret(LongueurPointArret, HauteurPointArret, CouleurPoleEchange, EpaisseurTraitArret, dernierArret.GetNom);
+                        Label etiquetteNomPoleEchange = CreerEtiquetteNomArret(dernierArret.GetNom, tpEtiquetteNomArret, dernierArret.GetEstPoleEchange);
+                        Label etiquetteCorrespondancePoleEchange = CreerEtiquetteCorrespondance(tpEtiquetteCorrespondance, dernierArret.GetEstPoleEchange);
 
-            if (estPoleEchange && !estPremierArret && !estDernierArret)
+                        etiquetteNomPoleEchange.RenderTransform = rotationEtiquetteNomArretTerminus;
+
+                        Canvas.SetLeft(pointPoleEchange, xPADernier);
+                        Canvas.SetTop(pointPoleEchange, yPADernier);
+
+                        Canvas.SetLeft(etiquetteNomPoleEchange, xPADernier + 5);
+                        Canvas.SetTop(etiquetteNomPoleEchange, yPADernier - 230);
+
+                        Canvas.SetLeft(etiquetteCorrespondancePoleEchange, xPADernier - 2);
+                        Canvas.SetTop(etiquetteCorrespondancePoleEchange, yPADernier - 6);
+
+                        canvas.Children.Add(pointPoleEchange);
+                        canvas.Children.Add(etiquetteNomPoleEchange);
+                        canvas.Children.Add(etiquetteCorrespondancePoleEchange);
+                    }
+                    else if(!dernierArret.GetEstCorrespondance && !dernierArret.GetEstPoleEchange)
+                    {
+                        Ellipse pointArret = CreerPointArret(LongueurPointArret, HauteurPointArret, CouleurLigne, EpaisseurTraitArret, dernierArret.GetNom);
+                        Label etiquetteNomArret = CreerEtiquetteNomArret(dernierArret.GetNom, tpEtiquetteNomArret, dernierArret.GetEstPoleEchange);
+
+                        etiquetteNomArret.RenderTransform = rotationEtiquetteNomArretTerminus;
+
+                        Canvas.SetLeft(pointArret, xPADernier);
+                        Canvas.SetTop(pointArret, yPADernier);
+
+                        Canvas.SetLeft(etiquetteNomArret, xPADernier + 5);
+                        Canvas.SetTop(etiquetteNomArret, yPADernier - 230);
+
+                        canvas.Children.Add(pointArret);
+                        canvas.Children.Add(etiquetteNomArret);
+                    }
+
+                    LesArrets.RemoveAt(LesArrets.Count - 1);
+                }                
+            }
+        }
+
+
+        private Line CreerArc(double x1, double y1, double x2, double y2, string couleur, double epaisseurTrait)
+        {
+            return new Line
             {
-                etiquetteCorrespondance.Foreground = Brushes.Black;
-                etiquetteNomArret.FontWeight = FontWeights.Bold;
+                X1 = x1,
+                Y1 = y1,
+                X2 = x2,
+                Y2 = y2,
+                Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(couleur)),
+                StrokeThickness = epaisseurTrait
+            };
+        }
+
+        private Ellipse CreerPointArret(double longueur, double hauteur, string couleur, double epaisseurTrait, string etiquette)
+        {
+            return new Ellipse
+            {
+                Width = longueur,
+                Height = hauteur,
+                Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(couleur)),
+                Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(couleur)),
+                StrokeThickness = epaisseurTrait,
+                Tag = etiquette
+            };
+        }
+
+        private Label CreerEtiquetteNomArret(string nom, double taillePolice, bool estPoleEchange)
+        {
+            if (estPoleEchange)
+            {
+                return new Label
+                {
+                    Content = nom,
+                    FontSize = taillePolice,
+                    HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center,
+                    VerticalAlignment = System.Windows.VerticalAlignment.Center,
+                    FontWeight = FontWeights.Bold
+                };
             }
-
-
+            else
+            {
+                return new Label
+                {
+                    Content = nom,
+                    FontSize = taillePolice,
+                    HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center,
+                    VerticalAlignment = System.Windows.VerticalAlignment.Center,
+                };
+            }
         }
 
-        /// <summary>
-        /// Permet d'ajouter un arc entre les arrêts du thermomètre
-        /// </summary>
-        /// <param name="nomArretPrecedent">Arrêt précédent</param>
-        /// <param name="nomArretSuivant">Arrêt suivant</param>
-        private static void AjouterArc(string nomArretPrecedent, string nomArretSuivant)
+        private Label CreerEtiquetteCorrespondance(double taillePolice, bool estPoleEchange)
         {
-
+            if (estPoleEchange)
+            {
+                return new Label
+                {
+                    Content = "C",
+                    FontSize = taillePolice,
+                    FontWeight = FontWeights.Bold,
+                    Foreground = Brushes.Black,
+                };
+            }
+            else
+            {
+                return new Label
+                {
+                    Content = "C",
+                    FontSize = taillePolice,
+                    FontWeight = FontWeights.Bold,
+                    Foreground = Brushes.White,
+                };
+            }
         }
 
-        /// <summary>
-        /// Permet de trouver un arrêt spécifique au thermomètre
-        /// </summary>
-        /// <param name="nomArret">Nom de l'arrêt</param>
-        /// <returns>FrameworkElement</returns>
-        private FrameworkElement TrouverArret(string nomArret)
+        private Rectangle CreerRectangleNoLigne(double longueur, double hauteur, string couleur, double bordureX, double bordureY, string etiquette)
         {
-            return new FrameworkElement();
+            return new Rectangle
+            {
+                Width = longueur,
+                Height = hauteur,
+                Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(couleur)),
+                Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(couleur)),
+                RadiusX = bordureX,
+                RadiusY = bordureY,
+                Tag = etiquette,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+        }
+
+        private Label CreerEtiquetteNoLigne(double longueur, double hauteur, string contenu, double taillePolice, string etiquette)
+        {
+            return new Label
+            {
+                Width = longueur,
+                Height = hauteur,
+                Content = contenu,
+                FontSize = taillePolice,
+                FontWeight = FontWeights.Bold,
+                Foreground = Brushes.White,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Tag = etiquette
+            };
         }
     }
 }

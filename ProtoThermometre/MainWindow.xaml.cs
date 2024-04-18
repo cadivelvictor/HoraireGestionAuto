@@ -19,28 +19,49 @@ namespace ProtoThermometre
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static readonly Dictionary<String, String> lignes = new Dictionary<string, string>
-        {
-            {"1", "#008000"}, {"5", "#E30613"}, {"6", "#4F80BD"}, {"7", "#76B82A"}, {"8", "#F39200"}, {"10", "#FFDD00"}, {"11", "#A85E24"},
-            {"12", "#EA5297"}, {"12A", "#EA5297"},{"12B", "#EA5297"}, {"13", "#00A68B"}, {"14", "#A2A628"}, {"15", "#ED925F"}, {"16", "#BFD243"},
-            {"19", "#A61D81"}, {"20", "#2DAFE6"}, {"21", "#76B88E"}, {"21A", "#76B88E"}, {"22", "#F3953F"}, {"22A", "#F3953F"}, {"23", "#8577B6"},
-            {"23A", "#8577B6"},{"23B", "#8577B6"}, {"23C", "#8577B6"}, {"23D", "#8577B6"}, {"23E", "#8577B6"}, {"24", "#004F9F"}, {"24A", "#004F9F"},
-            {"24B", "#004F9F"},{"25", "#72787A"}, {"25A", "#72787A"}, {"26", "#00823F"}, {"26A", "#00823F"}, {"27", "#009FE3"}, {"27A", "#009FE3"},
-            {"28", "#EE758F"}, {"29", "#BD2B0B"}, {"29A", "#BD2B0B"}, {"30", "#BC731E"}, {"31", "#B14D97"}, {"32", "#7E4900"}, {"33", "#C8D400"},
-            {"34", "#C6C6C6"}, {"36", "#FFCC07"}, {"37", "#AFCA13"}, {"38", "#0A9CA5"}, {"39", "#706F6F"}, {"40", "#13A538"}, {"41", "#F39200"},
-            {"42", "#BA4E97"}, {"44A", "#73858E"},{"46", "#E4032E"}, {"47", "#276499"}, {"48", "#5BC5F2"}, {"48A", "#5BC5F2"}, {"49", "#A98F00"},
-            {"50", "#FFCC00"}, {"51", "#009BA4"}, {"51A", "#009BA4"}, {"53", "#12A33A"},{"54", "#DE85B6"}, {"60", "#08A339"}, {"61", "#DF3439"},
-            {"62", "#EA8C36"}, {"63", "#1D9DD9"}, {"64", "#C8D400"}, {"65", "#7D8386"}, {"67", "#7C6EB0"}, {"68", "#F39200"}, {"69", "#006878"}
-        };
-
         public MainWindow()
         {
             InitializeComponent();
-            main();
-        }
 
-        public static void main()
-        {
+            Dictionary<string,string> lignes = new Dictionary<string,string>
+            {
+                {"1", "#008000"}, {"5", "#E30613"}, {"6", "#4F80BD"}, {"7", "#76B82A"}, {"8", "#F39200"}, {"10", "#FFDD00"}, {"11", "#A85E24"},
+                {"12", "#EA5297"}, {"12A", "#EA5297"},{"12B", "#EA5297"}, {"13", "#00A68B"}, {"14", "#A2A628"}, {"15", "#ED925F"}, {"16", "#BFD243"},
+                {"19", "#A61D81"}, {"20", "#2DAFE6"}, {"21", "#76B88E"}, {"21A", "#76B88E"}, {"22", "#F3953F"}, {"22A", "#F3953F"}, {"23", "#8577B6"},
+                {"23A", "#8577B6"},{"23B", "#8577B6"}, {"23C", "#8577B6"}, {"23D", "#8577B6"}, {"23E", "#8577B6"}, {"24", "#004F9F"}, {"24A", "#004F9F"},
+                {"24B", "#004F9F"},{"25", "#72787A"}, {"25A", "#72787A"}, {"26", "#00823F"}, {"26A", "#00823F"}, {"27", "#009FE3"}, {"27A", "#009FE3"},
+                {"28", "#EE758F"}, {"29", "#BD2B0B"}, {"29A", "#BD2B0B"}, {"30", "#BC731E"}, {"31", "#B14D97"}, {"32", "#7E4900"}, {"33", "#C8D400"},
+                {"34", "#C6C6C6"}, {"36", "#FFCC07"}, {"37", "#AFCA13"}, {"38", "#0A9CA5"}, {"39", "#706F6F"}, {"40", "#13A538"}, {"41", "#F39200"},
+                {"42", "#BA4E97"}, {"44A", "#73858E"},{"46", "#E4032E"}, {"47", "#276499"}, {"48", "#5BC5F2"}, {"48A", "#5BC5F2"}, {"49", "#A98F00"},
+                {"50", "#FFCC00"}, {"51", "#009BA4"}, {"51A", "#009BA4"}, {"53", "#12A33A"},{"54", "#DE85B6"}, {"60", "#08A339"}, {"61", "#DF3439"},
+                {"62", "#EA8C36"}, {"63", "#1D9DD9"}, {"64", "#C8D400"}, {"65", "#7D8386"}, {"67", "#7C6EB0"}, {"68", "#F39200"}, {"69", "#006878"}
+            };
+
+            List<Arret> lesArrets = new List<Arret>
+            {
+                new Arret("STADE DE L’EST", true, false, new List<string>{"15", "26", "27", "27A", "31", "33"}),
+                new Arret("Parc des Expositions", true, false, new List<string> { "27", "27A", "33" }),
+                new Arret("ZEC du Chaudron", true, false, new List <string> { "27", "27A", "33" }),
+                new Arret("Manès", true, false, null),
+                new Arret("Pierre Aubert", true, false, new List<string> { "27", "27A", "33" }),
+                new Arret("Roger Payet", true, false, new List<string> { "27", "27A", "31", "33" }),
+                new Arret("Station Chaudron", true, true, new List <string> { "1", "24", "24A", "25", "26", "27", "27A", "28", "29A", "31", "32", "33", "40" }),
+                new Arret("Mail du Chaudron", true, true, new List<string> { "1", "6", "8" }),
+                new Arret("Lacroix", true, false, new List<string> { "1", "6", "8" }),
+                new Arret("Sainte-Clotilde Centre", true, false, new List<string> { "1", "6", "7", "8" }),
+                new Arret("Banian", true, false, new List<string> { "1", "6", "7", "8" }),
+                new Arret("Deux Canons", true, false, new List<string> { "1", "6", "7", "8", "15" }),
+                new Arret("Parc Aquatique", true, true, new List<string> { "1", "6", "7", "8", "10", "15", "19" }),
+                new Arret("Butor", true, false, new List<string> { "1", "6", "7", "8" }),
+                new Arret("Hôtel des Impôts", true, false, new List<string> { "1", "6", "7", "8" }),
+                new Arret("Camp Jacquot", true, false, new List<string> { "1", "6", "7", "8" }),
+                new Arret("Saint-Jacques", true, false, new List<string> { "1", "6", "7", "8" }),
+                new Arret("Petit Marché", true, false, new List<string> { "6", "7", "8", "13", "14" }),
+                new Arret("École Centrale", true, false, new List<string> { "6", "7", "8", "13", "14" }),
+                new Arret("Rieul", true, false, new List<string> { "6", "7", "8", "13", "14" }),
+                new Arret("HÔTEL DE VILLE DE SAINT-DENIS", true, false, new List<string> { "6", "7", "8", "10", "11", "12", "13", "14", "16", "19", "21", "22", "22A", "23" })
+            };
+
             List<Ligne> lesLignes = new List<Ligne>();
 
             foreach (var paireCleValeur in lignes)
@@ -48,10 +69,8 @@ namespace ProtoThermometre
                 lesLignes.Add(new Ligne(paireCleValeur.Key, paireCleValeur.Value));
             }
 
-            foreach (var ligne in lesLignes)
-            {
-                MessageBox.Show($"Numéro de ligne : {ligne.GetNumero}, Couleur : {ligne.GetCouleur}");
-            }
+            Thermometre thermometre = new Thermometre("#E30613", "#ACC32B", lesArrets, lesLignes);
+            thermometre.Construire(canvas);
         }
 
         /// <summary>
@@ -60,8 +79,8 @@ namespace ProtoThermometre
         /// <param name="cheminFichier"></param>
         private void ExporterImage(string cheminFichier)
         {
-            var largeur = 2480;
-            var hauteur = 3508;
+            var largeur = 3508;
+            var hauteur = 2480;
             var dpiX = 300;
             var dpiY = 300;
             RenderTargetBitmap renduFinal = new RenderTargetBitmap(largeur, hauteur, dpiX, dpiY, PixelFormats.Pbgra32);
