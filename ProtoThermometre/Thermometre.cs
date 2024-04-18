@@ -68,9 +68,8 @@ namespace ProtoThermometre
 
         public void Construire(Canvas canvas)
         {
-            ;
-            double abscisseArc = canvas.ActualWidth / 2;
-            double ordonneeArc = canvas.ActualHeight / 2;
+            double abscisseArc = canvas.Width / 2;
+            double ordonneeArc = canvas.Height / 2;
 
             Line arcPrincipal = CreerArc(0, 0, 500, 0, CouleurLigne, 2);
             canvas.Children.Add(arcPrincipal);
@@ -164,7 +163,7 @@ namespace ProtoThermometre
                         Canvas.SetLeft(pointArret, xPADernier);
                         Canvas.SetTop(pointArret, yPADernier);
 
-                        Canvas.SetLeft(etiquetteNomArret, xPADernier + 5);
+                        Canvas.SetLeft(etiquetteNomArret, xPADernier - 225);
                         Canvas.SetTop(etiquetteNomArret, yPADernier - 230);
 
                         Canvas.SetLeft(etiquetteCorrespondanceArret, xPADernier - 2);
@@ -186,7 +185,7 @@ namespace ProtoThermometre
                         Canvas.SetLeft(pointPoleEchange, xPADernier);
                         Canvas.SetTop(pointPoleEchange, yPADernier);
 
-                        Canvas.SetLeft(etiquetteNomPoleEchange, xPADernier + 5);
+                        Canvas.SetLeft(etiquetteNomPoleEchange, xPADernier - 225);
                         Canvas.SetTop(etiquetteNomPoleEchange, yPADernier - 230);
 
                         Canvas.SetLeft(etiquetteCorrespondancePoleEchange, xPADernier - 2);
@@ -206,7 +205,7 @@ namespace ProtoThermometre
                         Canvas.SetLeft(pointArret, xPADernier);
                         Canvas.SetTop(pointArret, yPADernier);
 
-                        Canvas.SetLeft(etiquetteNomArret, xPADernier + 5);
+                        Canvas.SetLeft(etiquetteNomArret, xPADernier - 225);
                         Canvas.SetTop(etiquetteNomArret, yPADernier - 230);
 
                         canvas.Children.Add(pointArret);
