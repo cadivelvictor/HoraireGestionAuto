@@ -18,8 +18,9 @@ namespace ProtoThermometre
         private string CouleurPoleEchange;
         private List<Arret> LesArrets;
         private List<Ligne> LesLignes;
-        private double LongueurPointArret = 15;
-        private double HauteurPointArret = 15;
+        private static double Circonference = 15;
+        private double LongueurPointArret = Circonference;
+        private double HauteurPointArret = Circonference;
         private double EpaisseurTraitArret = 2;
         private double tpEtiquetteNomArret = 15;
         private double tpEtiquetteCorrespondance = 12;
@@ -82,6 +83,9 @@ namespace ProtoThermometre
             double xPADernier = axePrincipal.X2 - (LongueurPointArret / 2);
             double yPADernier = axePrincipal.Y2 - (HauteurPointArret / 2);
 
+            double centreXAxePrincipal = (axePrincipal.X1 + axePrincipal.X2) / 2;
+            double centreYAxePrincipal = (axePrincipal.Y1 + axePrincipal.Y2) / 2;
+
 
 
             if (LesArrets.Count > 0)
@@ -91,8 +95,6 @@ namespace ProtoThermometre
 
                 if(premierArret != null)
                 {
-
-
                     if (premierArret.GetEstCorrespondance)
                     {
                         Ellipse pointArret = CreerPointArret(LongueurPointArret, HauteurPointArret, CouleurPoleEchange, EpaisseurTraitArret, premierArret.GetNom);
@@ -102,19 +104,33 @@ namespace ProtoThermometre
                         etiquetteNomArret.RenderTransform = rotationEtiquetteNomArretTerminus;
                         etiquetteNomArret.FontSize = 20;
 
+                        pointArret.RenderTransformOrigin = new Point(axePrincipal.X1, axePrincipal.Y1);
+                        double x = pointArret.RenderTransformOrigin.X;
+                        double y = pointArret.RenderTransformOrigin.Y;
+
+
+
+                        /*                        Ellipse pointTerminusDebut = CreerPointArret((LongueurPointArret * 2), (HauteurPointArret * 2), CouleurLigne, EpaisseurTraitArret, premierArret.GetNom);
+                                                Canvas.SetLeft(pointTerminusDebut, xPAPremier);
+                                                Canvas.SetTop(pointTerminusDebut, yPAPremier);
+                                                canvas.Children.Add(pointTerminusDebut);*/
+
+
                         Canvas.SetLeft(pointArret, xPAPremier);
                         Canvas.SetTop(pointArret, yPAPremier);
 
                         Canvas.SetLeft(etiquetteNomArret, axePrincipal.X1);
                         Canvas.SetTop(etiquetteNomArret, (axePrincipal.Y1 - distnacePANA));
 
-                        Canvas.SetLeft(etiquetteCorrespondanceArret, (xPAPremier - 2));
-                        Canvas.SetTop(etiquetteCorrespondanceArret, (yPAPremier - 6));
+/*                        Canvas.SetLeft(etiquetteCorrespondanceArret, x);
+                        Canvas.SetRight(etiquetteCorrespondanceArret, x);
+                        Canvas.SetTop(etiquetteCorrespondanceArret, y);
+                        Canvas.SetBottom(etiquetteCorrespondanceArret, y);*/
 
                         Line axe1TermDebut = CreerAxe(axePrincipal.X1, (canvas.Height / 2), axePrincipal.X1, (Canvas.GetTop(etiquetteNomArret) + etiquetteNomArret.FontSize * 2), CouleurPoleEchange, 2);
                         canvas.Children.Add(axe1TermDebut);
 
-                        Line axe2TermDebut = CreerAxe((axe1TermDebut.X2 - 1), axe1TermDebut.Y2, (etiquetteNomArret.ToString().Length * 2), axe1TermDebut.Y2, CouleurPoleEchange, 2);
+                        Line axe2TermDebut = CreerAxe((axe1TermDebut.X2 - 1), axe1TermDebut.Y2, 150, axe1TermDebut.Y2, CouleurPoleEchange, 2);
                         canvas.Children.Add(axe2TermDebut);
 
                         canvas.Children.Add(pointArret);
@@ -326,7 +342,7 @@ namespace ProtoThermometre
                     Content = "C",
                     FontSize = taillePolice,
                     FontWeight = FontWeights.Bold,
-                    Foreground = Brushes.White,
+                    Foreground = Brushes.Black,
                 };
             }
         }
